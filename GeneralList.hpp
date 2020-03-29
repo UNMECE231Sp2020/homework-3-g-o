@@ -34,6 +34,13 @@ class List {
 			reccopy(list._front);
 		}
 
+		List &operator=(const List &list) {
+			_front=nullptr;
+			_back=nullptr;
+			_size=0;
+			reccopy(list._front);
+		}
+
 		~List() {
 			while(!empty()) {
 			//while(_size > 0) {
@@ -57,7 +64,7 @@ class List {
 			return _size;
 		}
 
-		void push_front(Data data) {
+		void push_front(const Data data) {
 			Dlist *newNode = new Dlist;
 			newNode->value = data;
 			newNode->prev = nullptr;
@@ -75,7 +82,7 @@ class List {
 			_size++;
 		}
 
-		void push_back(Data data) {
+		void push_back(const Data data) { 
 			Dlist *newNode = new Dlist;
 			newNode->value = data;
 			newNode->next=nullptr;
@@ -111,22 +118,16 @@ class List {
 
 		//CONVERT THIS FUNCTION
 		void pop_back() {
-			Llist *back_to_remove = _back;
+			Dlist *back_to_remove = _back;
 
-			if(_front->next!=nullptr) {
-				Llist *new_back = _front;
-				while(new_back->next!=_back) {
-					new_back=new_back->next;
-				}
-				new_back->next=nullptr;
-				_back=new_back;
-			}
-			else {
-				_front=nullptr;
-				_back=nullptr;
+			if(_back ==nullptr) {
+				_front = nullptr;
+			} else {
+				_back= _back->prev;
+				_back->next = nullptr;
 			}
 
-			delete back_to_remove;
+ 			delete back_to_remove;
 			_size-=1;
 		}
 
@@ -137,10 +138,43 @@ class List {
 
 		//Modify this
 		void print() {
-			Llist *temp;
+			Dlist *temp;
 			for(temp=_front; temp!=nullptr; temp=temp->next) {
 				std::cout << temp->value << " ";
 			}
 			std::cout << std::endl;
 		}
+
+		void print_back() {
+			Dlist *temp;
+			for (temp=_back; temp!=nullptr; temp=temp->prev) {
+				std::cout << temp->value << " ";
+			}
+			std::cout << std::endl;
+		}
+
+		friend bool operator==(const List<Data> &input1, const List<Data> &input2) {
+			Dlist *temp;
+			Dlist *temp2;
+
+			for (temp = input1._front, temp2 = input2._front; temp != nullptr, temp2 != nullptr; temp = temp->next, temp2=temp2->next) {
+				if (temp->value != temp2->value){
+						return false;
+				}	
+			}
+			return true;
+		}
+	
+		friend bool operator!=(const List<Data> &input1, const List<Data> &input2) {
+			Dlist *temp;
+			Dlist *temp2;
+
+			for (temp = input1._front, temp2 = input2._front; temp != nullptr, temp2 != nullptr; temp = temp->next, temp2=temp2->next) {
+				if (temp->value != temp2->value){
+					return true;
+				}
+			}
+			return false;
+		}
+		
 };
